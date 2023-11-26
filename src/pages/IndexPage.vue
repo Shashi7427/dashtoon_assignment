@@ -107,9 +107,11 @@ export default defineComponent({
       // we request 10 images
       // as these are async operations as and when we get the response we update our imageUrls array
       // this will eventually dispaly the images;
+
+      // resetting the images
+      this.disableButton = true;
+      this.buttonLabel = "Loading";
       for (let i = 0; i < 10; i++) {
-        this.buttonLabel = "Loading";
-        this.disableButton = true;
         this.query({ inputs: this.imageDescription })
           .then((response) => {
             // Process the successful response
