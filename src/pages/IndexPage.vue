@@ -111,6 +111,7 @@ export default defineComponent({
       // resetting the images
       this.disableButton = true;
       this.buttonLabel = "Loading";
+      this.showPanel = false;
       for (let i = 0; i < 10; i++) {
         this.query({ inputs: this.imageDescription })
           .then((response) => {
