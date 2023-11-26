@@ -1,4 +1,4 @@
-# Quasar App (dashtoon-frontend)
+# dashtoon AI App
 
 A Quasar Project
 
