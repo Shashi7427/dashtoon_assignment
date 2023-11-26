@@ -1,5 +1,6 @@
 <template>
   <q-page class="q-mt-lg">
+    <!-- main UI : showing an input box along with the application description -->
     <div class="flex flex-center q-mb-lg">
       <q-card class="my-card">
         <q-card-section>
@@ -19,16 +20,16 @@
         </q-card-section>
 
         <q-card-actions align="right">
-          <q-btn flat label="Generate" color="primary" @click="generateImage" />
+          <q-btn flat :label=buttonLabel color="primary" @click="generateImage" :disable=disableButton />
         </q-card-actions>
       </q-card>
     </div>
-    <div v-if="imageUrl">
-      <img :src="imageUrl" alt="Generated Image" class="generated-image" />
-      <q-btn label="Download Image" @click="downloadImage" />
-    </div>
+
+    <!-- showing images only if we get at least one response -->
     <div class="justify-center q-pa-lg" v-if="showPanel">
+      <!-- we show tree panels of size 3,4,3 showing in total 10 images -->
       <div class="q-col-gutter-sm row items-start">
+
         <div
           class="col-md-4 col-12"
           v-for="(url, index) in imageUrls.slice(4, 7)"
@@ -39,6 +40,7 @@
             <div class="absolute-bottom-right text-subtitle2" :class="url ? 'cursor-pointer' : ''" @click="() => downloadImage(url)">{{ url ? "download" : caption }}</div>
           </q-img>
         </div>
+
         <div
           class="col-md-3 col-12"
           v-for="(url, index) in imageUrls.slice(0, 4)"
@@ -48,6 +50,7 @@
             <div class="absolute-bottom-right text-subtitle2" :class="url ? 'cursor-pointer' : ''" @click="() => downloadImage(url)">{{ url ? "download" : caption }}</div>
           </q-img>
         </div>
+
         <div
           class="col-md-4 col-12"
           v-for="(url, index) in imageUrls.slice(7, 11)"
@@ -57,6 +60,7 @@
             <div class="absolute-bottom-right text-subtitle2" :class="url ? 'cursor-pointer' : ''" @click="() => downloadImage(url)">{{ url ? "download" : caption }}</div>
           </q-img>
         </div>
+
       </div>
     </div>
   </q-page>
@@ -69,11 +73,12 @@ export default defineComponent({
   name: "IndexPage",
   data() {
     return {
-      imageDescription: "",
-      imageUrl: null,
-      imageUrls: ref(Array(10).fill(null)),
-      caption :ref("Error fetching the image"),
-      showPanel : ref(true)
+      imageDescription: "", // variable to store the use query
+      imageUrls: ref(Array(10).fill(null)), // an array to 10 image urls which are initialized to null
+      caption :ref("Error fetching the image"), // error message shown if there is error or longer response time
+      showPanel : ref(false), // variable to show image panel if atleast one request is fetched
+      disableButton : ref(false), // to disable the button if the request is made
+      buttonLabel : ref("GENERATE") // button label if the to fetch the data;
     };
   },
   methods: {
@@ -103,11 +108,15 @@ export default defineComponent({
       // as these are async operations as and when we get the response we update our imageUrls array
       // this will eventually dispaly the images;
       for (let i = 0; i < 10; i++) {
+        this.buttonLabel = "Loading";
+        this.disableButton = true;
         this.query({ inputs: this.imageDescription })
           .then((response) => {
             // Process the successful response
             this.imageUrls[i] = URL.createObjectURL(response);
             this.showPanel = true;
+            this.buttonLabel = "GENERATE";
+            this.disable = false;
           })
           .catch((error) => {
             // Handle errors, including 502 errors
