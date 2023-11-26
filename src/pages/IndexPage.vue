@@ -118,7 +118,7 @@ export default defineComponent({
             this.imageUrls[i] = URL.createObjectURL(response);
             this.showPanel = true;
             this.buttonLabel = "GENERATE";
-            this.disable = false;
+            this.disableButton = false;
           })
           .catch((error) => {
             // Handle errors, including 502 errors
