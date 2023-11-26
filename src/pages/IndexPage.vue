@@ -30,30 +30,31 @@
     <div class="justify-center q-pa-lg" v-if="showPanel">
       <div class="q-col-gutter-sm row items-start">
         <div
-          class="col-4"
+          class="col-md-4 col-12"
           v-for="(url, index) in imageUrls.slice(4, 7)"
           :key="index"
         >
           <q-img :src="url || 'https://cdn.quasar.dev/img/parallax2.jpg'">
-            <div class="absolute-bottom-right text-subtitle2">{{ caption }}</div>
+            <!-- we are showing the download option if the image is fetched otherwire an error message is shown -->
+            <div class="absolute-bottom-right text-subtitle2" :class="url ? 'cursor-pointer' : ''" @click="() => downloadImage(url)">{{ url ? "download" : caption }}</div>
           </q-img>
         </div>
         <div
-          class="col-3"
+          class="col-md-3 col-12"
           v-for="(url, index) in imageUrls.slice(0, 4)"
           :key="index"
         >
           <q-img :src="url || 'https://cdn.quasar.dev/img/parallax2.jpg'">
-            <div class="absolute-bottom-right text-subtitle2" v-if="!url">{{ caption }}</div>
+            <div class="absolute-bottom-right text-subtitle2" :class="url ? 'cursor-pointer' : ''" @click="() => downloadImage(url)">{{ url ? "download" : caption }}</div>
           </q-img>
         </div>
         <div
-          class="col-4"
+          class="col-md-4 col-12"
           v-for="(url, index) in imageUrls.slice(7, 11)"
           :key="index"
         >
           <q-img :src="url || 'https://cdn.quasar.dev/img/parallax2.jpg'">
-            <div class="absolute-bottom-right text-subtitle2">{{ caption }}</div>
+            <div class="absolute-bottom-right text-subtitle2" :class="url ? 'cursor-pointer' : ''" @click="() => downloadImage(url)">{{ url ? "download" : caption }}</div>
           </q-img>
         </div>
       </div>
@@ -70,9 +71,9 @@ export default defineComponent({
     return {
       imageDescription: "",
       imageUrl: null,
-      imageUrls: ref(Array(10).fill(0)),
+      imageUrls: ref(Array(10).fill(null)),
       caption :ref("Error fetching the image"),
-      showPanel : ref(false)
+      showPanel : ref(true)
     };
   },
   methods: {
@@ -115,6 +116,18 @@ export default defineComponent({
           });
       }
     },
+    downloadImage :(url) => {
+      // if url is not fetched then return
+      if (!url) {
+        return;
+      }
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'generated-image.png';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
   },
 });
 </script>
